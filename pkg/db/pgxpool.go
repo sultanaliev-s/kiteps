@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -30,13 +31,18 @@ func NewPGXPool(url string, logger *logging.Logger, ctx context.Context) (*pgxpo
 
 	if err := pool.Ping(ctx); err != nil {
 		for i := 0; i < 10; i++ {
-			if err = pool.Ping(ctx); err == nil {
-				break
+			pool, err = pgxpool.NewWithConfig(ctx, config)
+			if err == nil && pool.Ping(ctx) == nil {
+				goto SUCCESS
 			}
+			logger.Error("failed to connect to database", logging.Error("connErr", err), logging.Error("pingErr", pool.Ping(ctx)), logging.Int("attempt", i+1))
 			time.Sleep(2 * time.Second)
 		}
-		return nil, err
+		return nil, errors.New("failed to connect to database")
 	}
 
+SUCCESS:
+
+	logger.Info("connected to database")
 	return pool, nil
 }

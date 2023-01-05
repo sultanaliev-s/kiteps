@@ -35,7 +35,12 @@ func NewPGXPool(url string, logger *logging.Logger, ctx context.Context) (*pgxpo
 			if err == nil && pool.Ping(ctx) == nil {
 				goto SUCCESS
 			}
-			logger.Error("failed to connect to database", logging.Error("connErr", err), logging.Error("pingErr", pool.Ping(ctx)), logging.Int("attempt", i+1))
+			logger.Error(
+				"failed to connect to database",
+				logging.Error("connErr", err),
+				logging.Error("pingErr", pool.Ping(ctx)),
+				logging.Int("attempt", i+1),
+			)
 			time.Sleep(2 * time.Second)
 		}
 		return nil, errors.New("failed to connect to database")

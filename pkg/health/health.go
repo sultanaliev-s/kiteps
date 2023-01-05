@@ -55,7 +55,6 @@ func NewHTTPHandler(serviceName string, checkers []Checker) http.Handler {
 func handlePing(msg []byte) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
 		w.Write(msg)
 	}
 }
@@ -90,7 +89,6 @@ func handleReady(checkers []Checker) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(resp)
-		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -118,5 +116,4 @@ func handleLive(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(resp)
-	w.WriteHeader(http.StatusOK)
 }

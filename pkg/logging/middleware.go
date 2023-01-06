@@ -31,7 +31,7 @@ func (l *Logger) NewEchoMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		err := next(c)
 
 		if err != nil {
-			l.Fatal(
+			l.Error(
 				reqLogMsg,
 				String("method", c.Request().Method),
 				String("path", c.Request().URL.Path),

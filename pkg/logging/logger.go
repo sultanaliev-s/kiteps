@@ -52,6 +52,7 @@ func NewLogger(logLevel string) (*Logger, error) {
 		lvl = l
 	}
 
+	config.EncoderConfig.StacktraceKey = zapcore.OmitKey
 	config.EncoderConfig.CallerKey = zapcore.OmitKey
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	config.Level = zap.NewAtomicLevelAt(lvl)
@@ -134,14 +135,17 @@ func (l *Logger) Error(msg string, fields ...Field) {
 }
 
 func (l *Logger) Fatal(msg string, fields ...Field) {
+	fields = append(fields, zap.Stack("stacktrace"))
 	l.logger.Fatal(msg, fields...)
 }
 
 func (l *Logger) Panic(msg string, fields ...Field) {
+	fields = append(fields, zap.Stack("stacktrace"))
 	l.logger.Panic(msg, fields...)
 }
 
 func (l *Logger) DPanic(msg string, fields ...Field) {
+	fields = append(fields, zap.Stack("stacktrace"))
 	l.logger.DPanic(msg, fields...)
 }
 

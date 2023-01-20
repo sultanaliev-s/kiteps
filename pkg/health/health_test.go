@@ -1,6 +1,7 @@
 package health
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -57,7 +58,7 @@ func TestReady(t *testing.T) {
 		}
 
 		checkers = []Checker{
-			func() Check {
+			func(ctx context.Context) Check {
 				return expectedRespCheck
 			},
 		}

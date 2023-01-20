@@ -1,6 +1,7 @@
 package health
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -22,7 +23,7 @@ type (
 	}
 
 	// Checker function should perform a check of some sort of external service
-	Checker func() Check
+	Checker func(ctx context.Context) Check
 
 	system struct {
 		Memory memory `json:"memory"`
@@ -64,7 +65,7 @@ func handleReady(checkers []Checker) http.HandlerFunc {
 		status := "UP"
 		checks := make([]Check, len(checkers))
 		for i, checker := range checkers {
-			check := checker()
+			check := checker(r.Context())
 			checks[i] = check
 			if check.Status != "UP" {
 				if check.Critical {
